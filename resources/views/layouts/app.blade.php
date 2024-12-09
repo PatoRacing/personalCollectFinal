@@ -14,6 +14,9 @@
         <!-- Favicon -->
         <link rel="icon" href="{{asset('img/isologo_fondoazul.png')}}" type="image/x-icon">
 
+        <!-- Scripts -->
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+
         @livewireStyles
 
     </head>
