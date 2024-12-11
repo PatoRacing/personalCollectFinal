@@ -7,7 +7,17 @@
             <p>{{ $alerta['mensaje'] }}</p>
         </div>
     @endif
-    <h2 class="{{config('classes.subtituloUno')}}">Listado de Cuotas</h2>  
+    <h2 class="{{config('classes.subtituloUno')}}">Listado de Cuotas</h2> 
+    <!--Alertas-->
+    @if(session('idNoExistente'))
+        <div x-data="{ show: true }" 
+            x-init="setTimeout(() => show = false, 5000)" 
+            x-show="show" 
+            @click.away="show = false"
+            class="{{ config('classes.alertaExito') }} text-green-800 bg-green-100 border-green-600">
+                <p>{{ session('idNoExistente') }}</p>
+        </div>
+    @endif 
     @if(session('error'))
         <div x-data="{ show: true }" 
             x-init="setTimeout(() => show = false, 2000)" 
@@ -91,8 +101,8 @@
                 </button>
             </div>
         @endif
+        <livewire:buscardor :contexto="5"/>
         @if($cuotas->count())
-            <livewire:buscardor :contexto="5"/>
             <div class="text-sm grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mt-1 border gap-1 p-1 max-h-[35rem] overflow-y-auto">
                 @foreach($cuotas as $cuota)
                     <div class="border border-gray-400 p-1">

@@ -1,5 +1,14 @@
 <div class="border p-1">
-    <h2 class="{{config('classes.subtituloUno')}}">Listado de Operaciones</h2>  
+    <h2 class="{{config('classes.subtituloUno')}}">Listado de Operaciones</h2> 
+    @if(session('idNoExistente'))
+        <div x-data="{ show: true }" 
+            x-init="setTimeout(() => show = false, 5000)" 
+            x-show="show" 
+            @click.away="show = false"
+            class="{{ config('classes.alertaExito') }} text-green-800 bg-green-100 border-green-600">
+                <p>{{ session('idNoExistente') }}</p>
+        </div>
+    @endif 
     @if(session('alertaExito'))
         <div x-data="{ show: true }" 
             x-init="setTimeout(() => show = false, 3000)" 
@@ -104,8 +113,8 @@
             </button>
         </div>
     @endif
-    @if($operaciones->count())
     <livewire:buscardor :contexto="3"/>
+    @if($operaciones->count())
     <div class="border text-sm container mx-auto grid grid-cols-1 justify-center md:grid-cols-2
             lg:grid-cols-5 gap-2 p-1 max-h-[35rem] overflow-y-auto">
         @foreach($operaciones as $operacion)

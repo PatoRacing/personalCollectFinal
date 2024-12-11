@@ -1,5 +1,15 @@
 <div class="border p-1">
-    <h2 class="{{config('classes.subtituloUno')}}">Listado de Acuerdos</h2>  
+    <h2 class="{{config('classes.subtituloUno')}}">Listado de Acuerdos</h2> 
+    <!--Alertas-->
+    @if(session('idNoExistente'))
+        <div x-data="{ show: true }" 
+            x-init="setTimeout(() => show = false, 5000)" 
+            x-show="show" 
+            @click.away="show = false"
+            class="{{ config('classes.alertaExito') }} text-green-800 bg-green-100 border-green-600">
+                <p>{{ session('idNoExistente') }}</p>
+        </div>
+    @endif 
     <div class="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-10 gap-1 p-1  my-1 border">
         <!-- Botones de navegación -->
         <button 
@@ -38,8 +48,8 @@
             Cancelado
         </button>
     </div>
+    <livewire:buscardor :contexto="4"/>
     @if($acuerdos->count())
-        <livewire:buscardor :contexto="4"/>
         <div class="border border-gray-300 text-sm container mx-auto grid grid-cols-1 justify-center md:grid-cols-2
                 lg:grid-cols-5 gap-2 p-1 max-h-[35rem] overflow-y-auto">
             @foreach($acuerdos as $acuerdo)

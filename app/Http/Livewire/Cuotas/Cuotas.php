@@ -787,6 +787,7 @@ class Cuotas extends Component
 
     public function buscarCuotas($deudor, $nro_doc, $cuil, $tipo_cuota, $vencimiento, $responsable)
     {
+        $this->resetPage();
         $this->deudor = $deudor;
         $this->nro_doc = $nro_doc;
         $this->cuil = $cuil;

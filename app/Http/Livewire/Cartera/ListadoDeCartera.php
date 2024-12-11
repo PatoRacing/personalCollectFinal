@@ -393,6 +393,7 @@ class ListadoDeCartera extends Component
     public function buscarCartera($deudor_cartera, $nro_doc_cartera, $cliente_cartera_id,
                     $producto_id_cartera, $operacion_cartera, $asignado_cartera_id)
     {
+        $this->resetPage();
         $this->deudor_cartera = $deudor_cartera;
         $this->nro_doc_cartera = $nro_doc_cartera;
         $this->cliente_cartera_id = $cliente_cartera_id;

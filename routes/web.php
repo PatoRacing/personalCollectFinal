@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 //Vistas abiertas
-Route::get('/', [AuthenticatedSessionController::class, 'create'])->name('/');
+Route::get('/', [AuthenticatedSessionController::class, 'create'])->middleware(['usuario.logueado'])->name('/');
 Route::post('/', [AuthenticatedSessionController::class, 'store']);
 Route::get('olvide-password', [PasswordResetLinkController::class, 'create'])->name('olvide.password');
 Route::post('olvide-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
@@ -41,20 +41,20 @@ Route::get('perfil', [PerfilController::class, 'index'])->middleware(['auth', 'v
 Route::get('usuarios', [UsuarioController::class, 'index'])->middleware(['auth', 'verified', 'rol.administrador'])->name('usuarios');
 //3-Clientes
 Route::get('clientes', [ClienteController::class, 'index'])->middleware(['auth', 'verified', 'rol.administrador'])->name('clientes');
-Route::get('perfil-cliente/{id}', [ClienteController::class, 'perfilCliente'])->middleware(['auth', 'verified', 'rol.administrador'])->name('perfil.cliente');
-Route::get('perfil-producto/{id}', [ClienteController::class, 'perfilProducto'])->middleware(['auth', 'verified', 'rol.administrador'])->name('perfil.producto');
+Route::get('perfil-cliente/{id}', [ClienteController::class, 'perfilCliente'])->middleware(['auth', 'verified', 'rol.administrador', 'validar.id'])->name('perfil.cliente');
+Route::get('perfil-producto/{id}', [ClienteController::class, 'perfilProducto'])->middleware(['auth', 'verified', 'rol.administrador', 'validar.id'])->name('perfil.producto');
 //4-Cartera
 Route::get('cartera', [CarteraController::class, 'index'])->middleware(['auth', 'verified'])->name('cartera');
-Route::get('deudor-perfil/{id}', [CarteraController::class, 'deudorPerfil'])->middleware(['auth', 'verified'])->name('deudor.perfil');
+Route::get('deudor-perfil/{id}', [CarteraController::class, 'deudorPerfil'])->middleware(['auth', 'verified', 'validar.id'])->name('deudor.perfil');
 //5-Gestiones sobre operacion
 Route::get('gestiones', [Gestioncontroller::class, 'index'])->middleware(['auth', 'verified'])->name('gestiones');
-Route::get('operacion-perfil/{id}', [Gestioncontroller::class, 'operacionPerfil'])->middleware(['auth', 'verified'])->name('operacion.perfil');
+Route::get('operacion-perfil/{id}', [Gestioncontroller::class, 'operacionPerfil'])->middleware(['auth', 'verified', 'validar.id'])->name('operacion.perfil');
 //6-Acuerdo
 Route::get('acuerdos', [AcuerdoController::class, 'index'])->middleware(['auth', 'verified'])->name('acuerdos');
-Route::get('acuerdo-perfil/{id}', [AcuerdoController::class, 'acuerdoPerfil'])->middleware(['auth', 'verified'])->name('acuerdo.perfil');
+Route::get('acuerdo-perfil/{id}', [AcuerdoController::class, 'acuerdoPerfil'])->middleware(['auth', 'verified', 'validar.id'])->name('acuerdo.perfil');
 //7-Cuotas
 Route::get('cuotas', [CuotaController::class, 'index'])->middleware(['auth', 'verified'])->name('cuotas');
-Route::get('cuota-perfil/{id}', [CuotaController::class, 'cuotaPerfil'])->middleware(['auth', 'verified'])->name('cuota.perfil');
+Route::get('cuota-perfil/{id}', [CuotaController::class, 'cuotaPerfil'])->middleware(['auth', 'verified', 'validar.id'])->name('cuota.perfil');
 
 //Revisar
 Route::middleware('auth')->group(function () {

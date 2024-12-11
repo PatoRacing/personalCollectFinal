@@ -38,6 +38,7 @@ class Acuerdos extends Component
     public function buscarAcuerdo($deudor_acuerdos, $nro_doc_acuerdos, $cliente_acuerdos_id,
                     $producto_id_acuerdos, $operacion_acuerdos, $asignado_acuerdos_id)
     {
+        $this->resetPage();
         $this->deudor_acuerdos = $deudor_acuerdos;
         $this->nro_doc_acuerdos = $nro_doc_acuerdos;
         $this->cliente_acuerdos_id = $cliente_acuerdos_id;

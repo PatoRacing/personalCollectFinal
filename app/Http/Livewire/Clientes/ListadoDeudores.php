@@ -19,6 +19,7 @@ class ListadoDeudores extends Component
 
     public function buscarDeudor($deudor, $nro_doc, $cuil)
     {
+        $this->resetPage();
         $this->deudor = $deudor;
         $this->nro_doc = $nro_doc;
         $this->cuil = $cuil;

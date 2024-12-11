@@ -25,6 +25,7 @@ class Clientes extends Component
     public $alertaError;
     public $alertaImportacion;
     public $mensajeAlerta;
+    public $mensajeIdNoExistente;
     //Mensajes
     public $mensajeError;
     public $errorEncabezadosContacto;

@@ -1,6 +1,6 @@
 <div>
+    <livewire:buscardor :contexto="1"/>
     @if($deudores->count())
-        <livewire:buscardor :contexto="1"/>
         <div class="container text-sm mx-auto grid grid-cols-1 justify-center md:grid-cols-2
             max-h-[35rem] overflow-y-auto lg:grid-cols-5 gap-2 pt-1 px-1">
             <!--Iteracion sobre los deudores-->

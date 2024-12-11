@@ -7,9 +7,11 @@ use App\Models\Operacion;
 use App\Models\Producto;
 use App\Models\Usuario;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Buscardor extends Component
 {
+    use WithPagination;
     //Variables auxiliares
     public $contexto;
     public $cliente;

@@ -384,6 +384,7 @@ class ListadoOperaciones extends Component
     public function buscarOperacion($deudor_operaciones, $nro_doc_operaciones, $producto_id_operaciones,
                                     $segmento_operaciones, $operacion_operaciones, $asignado_id)
     {
+        $this->resetPage();
         $this->deudor_operaciones = $deudor_operaciones;
         $this->nro_doc_operaciones = $nro_doc_operaciones;
         $this->producto_id_operaciones = $producto_id_operaciones; 

@@ -4,6 +4,15 @@
         + Cliente
     </button>
     <!--Alertas-->
+    @if(session('idNoExistente'))
+        <div x-data="{ show: true }" 
+            x-init="setTimeout(() => show = false, 5000)" 
+            x-show="show" 
+            @click.away="show = false"
+            class="{{ config('classes.alertaExito') }} text-green-800 bg-green-100 border-green-600">
+                <p>{{ session('idNoExistente') }}</p>
+        </div>
+    @endif
     @if($alertaExito)
         <div x-data="{ show: true }" 
             x-init="setTimeout(() => show = false, 2000)" 

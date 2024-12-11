@@ -72,8 +72,8 @@
             <p>Usuario asignado correctamente.</p>
         </div>
     @endif
+    <livewire:buscardor :contexto="2" :cliente="$cliente"/>
     @if($operaciones->count())
-        <livewire:buscardor :contexto="2" :cliente="$cliente"/>
         <div class="border border-gray-300 text-sm container mx-auto grid grid-cols-1 justify-center md:grid-cols-2
             lg:grid-cols-5 gap-1 max-h-[35rem] overflow-y-auto">
             @foreach($operaciones as $operacion)
