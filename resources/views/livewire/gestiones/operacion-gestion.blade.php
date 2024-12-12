@@ -1,6 +1,6 @@
 <div>
     <!--detalle, telefonos, operaciones, historial-->
-    <button class="{{ config('classes.btn') }} bg-blue-800 hover:bg-blue-900" onclick="window.location='{{ route('gestiones') }}'">
+    <button class="{{ config('classes.btn') }} bg-blue-800 hover:bg-blue-900" onclick="window.location='{{ route('cartera') }}'">
         Volver
     </button>
     <div id="encabezado" class="p-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 md:gap-1 mt-2">
@@ -28,17 +28,12 @@
         <!--Otras operaciones del deudor-->
         <div class="p-1 border">
             <h2 class="{{config('classes.subtituloUno')}}">Operaciones con el cliente sin gestión</h2>
-            <x-gestiones.operaciones-deudor-con-cliente :operacionesPermitidas="$operacionesPermitidas"
-                :operacionesDelDeudor="$operacionesDelDeudor" :sumaDeOperacionesPermitidas="$sumaDeOperacionesPermitidas"/>
+            <livewire:gestiones.operaciones-con-cliente :operacion="$operacion"/>
         </div>
         <!--Listado de telefonos-->
         <div class="p-1 border">
             <h2 class="{{config('classes.subtituloUno')}}">Listado de teléfonos</h2>
-            <x-gestiones.gestiones-listado-telefonos :telefonos="$telefonos" :mensajeUno="$mensajeUno"
-                :formularioNuevoTelefono="$formularioNuevoTelefono" :gestionTelefono="$gestionTelefono"
-                :modalActualizarTelefono="$modalActualizarTelefono" :modalEliminarTelefono="$modalEliminarTelefono"
-                :telefonoEliminado="$telefonoEliminado" 
-            />
+            <livewire:gestiones.listado-de-telefonos :operacion="$operacion"/>
         </div>
         <!--Historial de gestiones-->
         <div class="p-1 border">
@@ -68,11 +63,7 @@
                 }
             @endphp
             <h2 class="{{config('classes.subtituloUno')}}">Nueva gestión de {{$usuario}}</h2>
-            <livewire:gestiones.nueva-gestion
-                :operacion="$operacion"
-                :telefonos="$telefonos"
-                :operacionesPermitidas="$operacionesPermitidas"
-            >
+            <livewire:gestiones.nueva-gestion :operacion="$operacion" :telefonos="$telefonos" />
         </div>
     </div>
 </div>

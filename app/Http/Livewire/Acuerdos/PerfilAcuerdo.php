@@ -141,19 +141,6 @@ class PerfilAcuerdo extends Component
             $gestion->resultado = 6;//Gestion cancelada
             $gestion->ult_modif = auth()->id();
             $gestion->save();
-            //Si la gestion es multiproducto actualizo las operacion abarcadas
-            if($gestion->multiproducto == 1)
-            {
-                $operacionesAbarcadas = GestionOperacion::where('gestion_id', $gestion->id)->get();
-                foreach($operacionesAbarcadas as $operacionAbarcada)
-                {
-                    $operacionAbarcadaId = $operacionAbarcada->operacion_id;
-                    $operacionMultiproducto = Operacion::find($operacionAbarcadaId);
-                    $operacionMultiproducto->estado_operacion = 5;//Operacion con deudor ubicado
-                    $operacionMultiproducto->ult_modif = auth()->id();
-                    $operacionMultiproducto->save();
-                };
-            }
             //Se actualiza la operacion actual
             $operacion = $this->acuerdo->gestion->operacion;
             $operacion->estado_operacion = 5;//Operacion con deudor ubicado

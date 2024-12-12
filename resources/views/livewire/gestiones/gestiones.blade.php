@@ -35,15 +35,23 @@
                             </p>
                             <p>Contacto:
                                 <span class="font-bold">
-                                    {{$gestion->telefono->numero}}
+                                    @if(!$gestion->telefono)
+                                        -
+                                    @else
+                                        {{$gestion->telefono->numero}} 
+                                    @endif
                                 </span>
                             </p>
                             <p>Estado Contacto:
                                 <span class="font-bold">
-                                    @if($gestion->telefono->estado == 1)
-                                        Verificado
+                                    @if(!$gestion->telefono)
+                                        -
                                     @else
-                                        Sin verificar
+                                        @if($gestion->telefono->estado == 1)
+                                            Verificado
+                                        @else
+                                            Sin verificar
+                                        @endif
                                     @endif
                                 </span>
                             </p>
@@ -188,7 +196,11 @@
                             </p>
                             <p>Contacto:
                                 <span class="font-bold">
-                                    {{$gestion->contacto->numero}}
+                                    @if(!$gestion->contacto)
+                                        -
+                                    @else
+                                        {{$gestion->contacto->numero}} 
+                                    @endif
                                 </span>
                             </p>
                             <p>Resultado:
@@ -206,27 +218,6 @@
                                     @endif
                                 </span>
                             </p>
-                            <p>Multiproducto:
-                                <span class="font-bold">
-                                    @if($gestion->multiproducto == 1)
-                                        Si
-                                    @else
-                                        No
-                                    @endif
-                                </span>
-                            </p>
-                            @if($gestion->multiproducto == 1)
-                                @php
-                                    $operacionesAbarcadas = \App\Models\GestionOperacion::where('gestion_id', $gestion->id)->get();
-                                @endphp
-                                <p>Op. abarcadas:
-                                    <span class="font-bold">
-                                        @foreach ($operacionesAbarcadas as $operacionAbarcada)
-                                            {{$operacionAbarcada->operacion->operacion}}
-                                        @endforeach
-                                    </span>
-                                </p>
-                            @endif
                             <p>Observaciones:
                                 <span class="font-bold">
                                     {{$gestion->observaciones}}

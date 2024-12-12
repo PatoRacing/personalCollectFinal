@@ -44,7 +44,9 @@ class Gestiones extends Component
 
     private function obtenerGestiones()
     {
-        if ($this->tipoDeGestion == 1) {
+        //Consulta para gestiones de deudor
+        if ($this->tipoDeGestion == 1)
+        {
             // Obtener gestiones sobre deudor
             $query = GestionDeudor::orderBy('deudor_id', 'asc');
 
@@ -53,7 +55,10 @@ class Gestiones extends Component
             }
 
             return $query->paginate(50);
-        } else {
+        }
+        //Consulta para gestiones de operacion
+        else
+        {
             // Obtener gestiones sobre operación
             $query = Gestion::orderBy('created_at', 'desc');
 

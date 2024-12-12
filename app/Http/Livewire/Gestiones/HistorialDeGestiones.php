@@ -24,7 +24,7 @@ class HistorialDeGestiones extends Component
     public $contextoModalEliminacion;
     public $modalArchivarOperacion = false;
 
-    public function gestiones($contexto , $gestionId = null, $multiproducto = null)
+    public function gestiones($contexto , $gestionId = null)
     {
         $this->mensajeUno = '';
         $this->mensajeDos = '';
@@ -35,23 +35,17 @@ class HistorialDeGestiones extends Component
         if($contexto == 1)
         {
             $this->gestionId = $gestionId;
-            //Si no tiene multiproducto
-            $this->mensajeUno = 'La la gestión y operación cambiará su estado a propuesta de pago.';
-            //Si tiene multiproducto
-            if($multiproducto)
-            {
-                $this->mensajeUno = 'La gestión, la operación actual y las otras abarcadas en la negociación
-                                    multiproducto cambiarán su estado a propuesta de pago.';
-            }
+            $this->mensajeUno = 'La gestión cambiará a propuesta de pago.';
+            $this->mensajeDos = 'Lo mismo sucederá con la operación.';
             $this->modalConfirmarNegociacion = true;
         }
         //Cerrar modal confirmar negociacion
-        if($contexto == 2)
+        elseif($contexto == 2)
         {
             $this->modalConfirmarNegociacion = false;
         }
         //Modal archivar gestion
-        if($contexto == 3)
+        elseif($contexto == 3)
         {
             $this->gestionId = $gestionId;
             //Si no tiene multiproducto
@@ -59,12 +53,12 @@ class HistorialDeGestiones extends Component
             $this->modalArchivarOperacion = true;
         }
         //Cerrar modal archivar gestion
-        if($contexto == 4)
+        elseif($contexto == 4)
         {
             $this->modalArchivarOperacion = false;
         }
         //Modal eliminar gestion
-        if($contexto == 5)
+        elseif($contexto == 5)
         {
             $this->gestionId = $gestionId;
             $gestion = Gestion::find($this->gestionId);
@@ -80,26 +74,16 @@ class HistorialDeGestiones extends Component
             }
             else
             {
-                //Si no tiene multiproducto
                 $this->mensajeUno = 
                     'Se eliminará la gestión.';
                 $this->mensajeDos =
                     'Se actualizará el estado de la operación.';
                 $this->contextoModalEliminacion = 2;
                 $this->modalEliminarGestion[$this->contextoModalEliminacion] = true;
-                if($multiproducto)
-                {
-                    $this->mensajeUno =
-                        'Se eliminará la gestión y se actualizará la operación.';
-                    $this->mensajeDos =
-                        'Lo mismo sucederá con las operaciones abarcadas.';
-                    $this->contextoModalEliminacion = 3;
-                    $this->modalEliminarGestion[$this->contextoModalEliminacion] = true;
-                }
             }
         }
         //Cerrar modal eliminar gestion
-        if($contexto == 6)
+        elseif($contexto == 6)
         {
             $this->modalEliminarGestion = false;
         }
@@ -115,19 +99,6 @@ class HistorialDeGestiones extends Component
         $this->operacion->estado_operacion = 7;//Operacion Propuesta de Pago
         $this->operacion->ult_modif = auth()->id();
         $this->operacion->save();
-        //Si tiene multiproducto tambien se actualiza el estado de las operaciones abarcadas
-        if($gestion->multiproducto == 1)
-        {
-            $gestionesMultiproducto = GestionOperacion::where('gestion_id', $this->gestionId)->get();
-            foreach($gestionesMultiproducto as $gestionMultiproducto)
-            {
-                $operacionAbarcadaId = $gestionMultiproducto->operacion_id;
-                $operacionAbarcada = Operacion::find($operacionAbarcadaId);
-                $operacionAbarcada->estado_operacion = 7;//Operacion Propuesta de Pago
-                $operacionAbarcada->ult_modif = auth()->id();
-                $operacionAbarcada->save();
-            }
-        }
         $contexto = 2;
         $this->gestionExitosa($contexto);
     }
@@ -146,32 +117,6 @@ class HistorialDeGestiones extends Component
     {
         //Busco la gestion seleccionada
         $gestion = Gestion::find($this->gestionId);
-        //Si la gestion es multiproducto ubico a las operaciones abarcadas
-        if($gestion->multiproducto == 1)
-        {
-            $gestionesAbarcadas = GestionOperacion::where('gestion_id', $gestion->id)->get();
-            foreach($gestionesAbarcadas as $gestionAbarcada)
-            {
-                $operacionAbarcadaId = $gestionAbarcada->operacion_id;
-                $operacionAbarcada = Operacion::find($operacionAbarcadaId);
-                //Ubico si la operacion abarcada tiene una gestion previa
-                $gestionAnteriorDeLaOperacionAbarcada = Gestion::where('operacion_id', $operacionAbarcadaId)
-                                            ->orderBy('created_at', 'desc')
-                                            ->first();
-                //Si la operacion abarcada tiene gestion previa actualiza su estado a negociacion
-                if($gestionAnteriorDeLaOperacionAbarcada)
-                {
-                    $operacionAbarcada->estado_operacion = 6;//Operacion negociacion
-                }
-                //Si no tiene gestion previa la operacion abarcada actualiza su estado a ubicado
-                else
-                {
-                    $operacionAbarcada->estado_operacion = 5;//Operacion ubicado
-                }
-                $operacionAbarcada->ult_modif = auth()->id();
-                $operacionAbarcada->save();
-            }
-        }
         //Identifico si la operacion actual tiene una gestion previa a la que se esta eliminando
         $siguienteGestion = Gestion::where('operacion_id', $this->operacion->id)
                                 ->where('id', '!=', $this->gestionId)
@@ -225,19 +170,9 @@ class HistorialDeGestiones extends Component
         //Ubico todas las gestiones propias de la operacion y la ultima de la misma
         $gestiones = Gestion::where('operacion_id', $this->operacion->id)->orderBy('created_at', 'desc')->get();
         $ultimaGestion = $gestiones->first();
-        //Ubico todas las gestiones multiproducto de la operacion y la ultima de la misma
-        $gestionesMultiproducto = GestionOperacion::where('operacion_id', $this->operacion->id)->get();
-        $operacionGestionadaId = null;
-        if($gestionesMultiproducto->isNotEmpty())
-        {
-            $operacionGestionada = $gestionesMultiproducto->first();
-            $operacionGestionadaId = $operacionGestionada->gestion->operacion->id;
-        }
 
         return view('livewire.gestiones.historial-de-gestiones',[
             'gestiones' => $gestiones,
-            'gestionesMultiproducto' => $gestionesMultiproducto,
-            'operacionGestionadaId' => $operacionGestionadaId,
             'ultimaGestion' => $ultimaGestion
         ]);
     }

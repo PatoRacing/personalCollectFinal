@@ -40,6 +40,10 @@ class PagosParaRendirExport implements FromCollection, WithHeadings, WithColumnW
             {
                 $nroCuota = 'Anticipo';
             }
+            if($pagoADescargar->cuota->concepto == 'Saldo Excedente')
+            {
+                $nroCuota = 'Saldo Excedente';
+            }
             $montoAcordado = $pagoADescargar->cuota->monto;
             if($montoAcordado > $pagoADescargar->monto_abonado)
             {

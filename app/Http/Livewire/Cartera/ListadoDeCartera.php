@@ -65,14 +65,14 @@ class ListadoDeCartera extends Component
             $this->modalExportarPropuestas = true;
         }
         //Cerrar modal exportar propuestas
-        if($contexto == 2)
+        elseif($contexto == 2)
         {
             $this->reset('clienteId');
             $this->resetValidation();
             $this->modalExportarPropuestas = false;
         }
         //Cerrar modal no hay propuestas
-        if($contexto == 3)
+        elseif($contexto == 3)
         {
             $this->modalSinOperaciones = false;
             $this->reset('clienteId');
@@ -80,13 +80,13 @@ class ListadoDeCartera extends Component
             $this->modalExportarPropuestas = false;
         }
         //Modal Importar propuestas
-        if($contexto == 4)
+        elseif($contexto == 4)
         {
             $this->mensajeUno = 'Selecciona el archivo con los propuestas.';
             $this->modalImportarPropuestas = true;
         }
         //Cerrar modal Importar propuestas
-        if($contexto == 5)
+        elseif($contexto == 5)
         {
             $this->reset('archivoSubido');
             $this->resetValidation();
@@ -142,7 +142,7 @@ class ListadoDeCartera extends Component
         {
             $excel = $this->archivoSubido;
             $encabezadosExcel = (new HeadingRowImport())->toArray($excel)[0][0];
-            $encabezadosEsperados = ['multiproducto', 'op_abarcadas', 'gestion_id', 'estado'];
+            $encabezadosEsperados = ['gestion_id', 'estado'];
             if ($encabezadosEsperados !== $encabezadosExcel)
             {
                 $this->mensajeUno = 'Seleccione el archivo correcto.';
@@ -195,19 +195,6 @@ class ListadoDeCartera extends Component
                                 $operacion->estado_operacion = 8;//La operacion con acuerdo de pago
                                 $operacion->ult_modif = auth()->id();
                                 $operacion->save();
-                                //3- Si la gestion aprobada es multiproducto actualizo las operaciones abarcadas
-                                if($propuestaImportada['multiproducto'] == 'Sí')
-                                {
-                                    $gestionesAbarcadas = GestionOperacion::where('gestion_id', $gestion->id)->get();
-                                    foreach($gestionesAbarcadas as $gestionAbarcada)
-                                    {
-                                        $operacionAbarcadaId = $gestionAbarcada->operacion_id;
-                                        $operacionAbarcada = Operacion::find($operacionAbarcadaId);
-                                        $operacionAbarcada->estado_operacion = 8;//La operacion abarcada pasa a acuerdo de pago
-                                        $operacionAbarcada->ult_modif = auth()->id();
-                                        $operacionAbarcada->save();
-                                    }
-                                }
                                 //4- Genero un nuevo acuerdo de pago
                                 $acuerdoDePago = new Acuerdo ([
                                     'gestion_id' => $gestion->id,

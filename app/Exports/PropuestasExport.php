@@ -138,25 +138,6 @@ class PropuestasExport implements FromCollection, WithHeadings, WithColumnWidths
                     ->addDays($gestion->cantidad_cuotas_tres * 30);
                     $fechaFinalizacionACP = $fechaFinalizacionACP->format('d/m/Y');
                 }
-                if($gestion->multiproducto)
-                {
-                    $multiproducto = 'Sí';
-                    $operacionesMultiproducto = GestionOperacion::where('gestion_id', $gestion->id)->get();
-                    $operacionesAbarcadas = [];
-                    foreach($operacionesMultiproducto as $operacionMultiproducto)
-                    {
-                        $operacionId = $operacionMultiproducto->operacion_id;
-                        $operacionAbarcada = Operacion::find($operacionId);
-                        $nroOperacionAbarcada = $operacionAbarcada->operacion;
-                        $operacionesAbarcadas[] = $nroOperacionAbarcada;
-                    }
-                    $operacionesAbarcadas = implode(', ', $operacionesAbarcadas);
-                }
-                else
-                {
-                    $multiproducto = '-';
-                    $operacionesAbarcadas = '-';
-                }
                 $data->push([
                     $gestion->operacion->cliente->nombre,
                     ucwords(strtolower($gestion->deudor->nombre)),
@@ -182,8 +163,6 @@ class PropuestasExport implements FromCollection, WithHeadings, WithColumnWidths
                     $fechaPagoCuota = Carbon::parse($gestion->fecha_pago_cuota)->format('d/m/Y'),
                     $fechaFinalizacionACP,
                     $fechaACP,
-                    $multiproducto,
-                    $operacionesAbarcadas,
                     $gestion->id,
                     'Para Enviar'
                 ]);
@@ -219,8 +198,6 @@ class PropuestasExport implements FromCollection, WithHeadings, WithColumnWidths
             'Fecha Pago Cta.',
             'Fecha Finalización',
             'Fecha de Envío',
-            'Multiproducto',
-            'Op. Abarcadas',
             'Gestion ID',
             'Estado'
         ];
@@ -253,10 +230,8 @@ class PropuestasExport implements FromCollection, WithHeadings, WithColumnWidths
             'V'=> 17, // Fecha Pago Cta.
             'W'=> 17, // Fecha Finalización
             'X'=> 17, // Fecha de Envío
-            'Y'=> 17, // Multiproducto
-            'Z'=> 25, // Gestiones abarcardas
-            'AA'=> 15, // Gestion Id
-            'AB'=> 20, //Estado
+            'Y'=> 15, // Gestion Id
+            'Z'=> 20, //Estado
         ];
     }
 

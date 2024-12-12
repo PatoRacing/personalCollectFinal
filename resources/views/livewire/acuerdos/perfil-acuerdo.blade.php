@@ -33,7 +33,7 @@
                     @elseif($acuerdo->estado == 2 && auth()->user()->rol == 'Administrador')
                         <button class="{{ config('classes.btn') }} mb-1 bg-red-600 hover:bg-red-700"
                             wire:click="gestiones(4)">
-                            Cancelar
+                            Anular
                         </button>
                     @endif
                 </div>
@@ -193,30 +193,13 @@
                     </p>
                     <p>Contacto:
                         <span class="font-bold">
-                            {{$acuerdo->gestion->contacto->numero}}
-                        </span>
-                    </p>
-                    <p>Multiproducto:
-                        <span class="font-bold">
-                            @if($acuerdo->gestion->multiproducto == 1)
-                                Si
+                            @if(!$acuerdo->gestion->contacto)
+                                Contacto eliminado
                             @else
-                                No
+                                {{$acuerdo->gestion->contacto->numero}}
                             @endif
                         </span>
                     </p>
-                    @if($acuerdo->gestion->multiproducto == 1)
-                        @php
-                            $operacionesAbarcadas = \App\Models\GestionOperacion::where('gestion_id', $acuerdo->gestion->id)->get();
-                        @endphp
-                        <p>Op. abarcadas:
-                            <span class="font-bold">
-                                @foreach ($operacionesAbarcadas as $operacionAbarcada)
-                                    {{$operacionAbarcada->operacion->operacion}}
-                                @endforeach
-                            </span>
-                        </p>
-                    @endif
                     <p>Observaciones:
                         <span class="font-bold">
                             {{$acuerdo->gestion->observaciones}}

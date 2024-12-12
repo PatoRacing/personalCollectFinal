@@ -101,9 +101,7 @@
                             <x-gestiones.formulario-guardar-gestion-operacion
                                 :contexto="$contexto"
                                 :telefonos="$telefonos" 
-                                :operacionesPermitidas="$operacionesPermitidas" 
                                 :observaciones="$observaciones"
-                                :multiproducto="$multiproducto"
                             />
                             <div class="grid grid-cols-2 justify-center gap-1 px-2">
                                 <button class="{{ config('classes.btn') }} bg-green-700 hover:bg-green-800">
@@ -213,11 +211,9 @@
                         <form wire:submit.prevent="establecerOrigen(2)">
                             <x-gestiones.formulario-guardar-gestion-operacion
                                 :contexto="$contexto"
-                                :telefonos="$telefonos"
-                                :operacionesPermitidas="$operacionesPermitidas" 
+                                :telefonos="$telefonos" 
                                 :anticipo_cuotas_fijas="$anticipo_cuotas_fijas"
                                 :observaciones="$observaciones"
-                                :multiproducto="$multiproducto"
                                 :resultado="$resultado"
                             />
                             <div class="grid grid-cols-2 justify-center gap-1 px-2">
@@ -354,8 +350,6 @@
                             <x-gestiones.formulario-guardar-gestion-operacion
                                 :contexto="$contexto"
                                 :telefonos="$telefonos"
-                                :operacionesPermitidas="$operacionesPermitidas" 
-                                :multiproducto="$multiproducto"
                                 :anticipo_cuotas_variables="$anticipo_cuotas_variables"
                                 :observaciones="$observaciones"
                                 :resultado="$resultado"

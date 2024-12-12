@@ -134,25 +134,6 @@ class AcuerdosPreaprobadosExport implements FromCollection, WithHeadings, WithCo
             ->addDays($this->acuerdo->gestion->cantidad_cuotas_tres * 30);
             $fechaFinalizacionACP = $fechaFinalizacionACP->format('d/m/Y');
         }
-        if($this->acuerdo->gestion->multiproducto)
-        {
-            $multiproducto = 'Sí';
-            $operacionesMultiproducto = GestionOperacion::where('gestion_id', $this->acuerdo->gestion->id)->get();
-            $operacionesAbarcadas = [];
-            foreach($operacionesMultiproducto as $operacionMultiproducto)
-            {
-                $operacionId = $operacionMultiproducto->operacion_id;
-                $operacionAbarcada = Operacion::find($operacionId);
-                $nroOperacionAbarcada = $operacionAbarcada->operacion;
-                $operacionesAbarcadas[] = $nroOperacionAbarcada;
-            }
-            $operacionesAbarcadas = implode(', ', $operacionesAbarcadas);
-        }
-        else
-        {
-            $multiproducto = '-';
-            $operacionesAbarcadas = '-';
-        }
         $data->push([
             $this->acuerdo->gestion->operacion->cliente->nombre,
             ucwords(strtolower($this->acuerdo->gestion->deudor->nombre)),
@@ -178,8 +159,6 @@ class AcuerdosPreaprobadosExport implements FromCollection, WithHeadings, WithCo
             $fechaPagoCuota = Carbon::parse($this->acuerdo->gestion->fecha_pago_cuota)->format('d/m/Y'),
             $fechaFinalizacionACP,
             $fechaACP,
-            $multiproducto,
-            $operacionesAbarcadas,
             'Para Enviar'
         ]);
         return $data;
@@ -212,8 +191,6 @@ class AcuerdosPreaprobadosExport implements FromCollection, WithHeadings, WithCo
             'Fecha Pago Cta.',
             'Fecha Finalización',
             'Fecha de Envío',
-            'Multiproducto',
-            'Op. Abarcadas',
             'Estado'
         ];
     }
@@ -245,9 +222,7 @@ class AcuerdosPreaprobadosExport implements FromCollection, WithHeadings, WithCo
             'V'=> 17, // Fecha Pago Cta.
             'W'=> 17, // Fecha Finalización
             'X'=> 17, // Fecha de Envío
-            'Y'=> 17, // Multiproducto
-            'Z'=> 25, // Gestiones abarcardas
-            'AB'=> 20, //Estado
+            'Y'=> 20, //Estado
         ];
     }
 

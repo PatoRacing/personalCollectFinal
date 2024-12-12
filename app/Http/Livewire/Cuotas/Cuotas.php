@@ -221,43 +221,17 @@ class Cuotas extends Component
         ]);
         $this->modalExportar = false;
         //Obtenemos hasta 20 pagos aplicados (3)
-        $pagosAplicados = Pago::where('estado', 3)->take(20)->get();
-        //Obtenemos uns sola cuota por acuerdo
-        $pagosFiltrados = collect();
-        foreach($pagosAplicados as $pagoAplicado)
-        {
-            //Obtengo la instancia de la cuota a la que corresponde el pago
-            $cuotaId = $pagoAplicado->cuota_id;
-            $cuotaDelPagoAplicado = Cuota::find($cuotaId);
-            $acuerdoId = $cuotaDelPagoAplicado->acuerdo_id;
-            $pagoAplicado->acuerdo_id = $acuerdoId;
-            $nroCuota = $cuotaDelPagoAplicado->nro_cuota;
-            $pagoAplicado->nro_cuota = $nroCuota;
-            //Verifico si en el arreglo de pagos filtrados ya no existe un pago para ese acuerdo
-            if (!$pagosFiltrados->has($acuerdoId))
-            {
-                //Si no existe se agrega a la coleccion
-                $pagosFiltrados[$acuerdoId] = $pagoAplicado;
-            }
-            else
-            {
-                //Si ya existe un pago para ese acuerdo se elije el de la cuota mas baja
-                if ($nroCuota < $pagosFiltrados[$acuerdoId]->nro_cuota)
-                {
-                    $pagosFiltrados[$acuerdoId] = $pagoAplicado;
-                }
-            }
-        }
+        $pagosAplicados = Pago::where('estado', 3)->get();
         $pagosADescargar = [];
         //Iternamos sobre los pagos a descargar
-        foreach ($pagosFiltrados as $pagoFiltrado)
+        foreach ($pagosAplicados as $pagoAplicado)
         {
             //Obtengo la operacion a la que corresponde el pago para descargar los pagos del segemento elegido
-            $operacionId = $pagoFiltrado->cuota->acuerdo->gestion->operacion->id;
+            $operacionId = $pagoAplicado->cuota->acuerdo->gestion->operacion->id;
             $operacion = Operacion::find($operacionId);
             if($operacion->segmento == $this->segmento)
             {
-                $pagosADescargar[] = $pagoFiltrado;
+                $pagosADescargar[] = $pagoAplicado;
             }
         }
         if(empty($pagosADescargar))

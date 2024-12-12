@@ -112,32 +112,11 @@
                                 {{$acuerdo->gestion->operacion->segmento}}
                             </span>
                         </p>
-                        <p>Op. gestionada:
+                        <p>Operación:
                             <span class="font-bold">
                                 {{$acuerdo->gestion->operacion->operacion}}
                             </span>
                         </p>
-                        <p>Multiproducto:
-                            <span class="font-bold">
-                                @if($acuerdo->gestion->multiproducto == 1)
-                                    Si
-                                @else
-                                    No
-                                @endif
-                            </span>
-                        </p>
-                        @if($acuerdo->gestion->multiproducto == 1)
-                            @php
-                                $operacionesAbarcadas = \App\Models\GestionOperacion::where('gestion_id', $acuerdo->gestion->id)->get();
-                            @endphp
-                            <p>Op. abarcadas:
-                                <span class="font-bold">
-                                    @foreach ($operacionesAbarcadas as $operacionAbarcada)
-                                        {{$operacionAbarcada->operacion->operacion}}
-                                    @endforeach
-                                </span>
-                            </p>
-                        @endif
                         <p>Monto ofrecido:
                             <span class="font-bold">
                                 ${{number_format($acuerdo->gestion->monto_ofrecido, 2, ',', '.')}}
@@ -229,9 +208,15 @@
                             </span>
                         </p>
                         <p>Contacto:
-                            <span class="font-bold">
-                                {{$acuerdo->gestion->contacto->numero}}
-                            </span>
+                            @if(!$acuerdo->gestion->contacto)
+                                <span class="font-bold">
+                                    Contacto Eliminado
+                                </span>
+                            @else
+                                <span class="font-bold">
+                                    {{$acuerdo->gestion->contacto->numero}}
+                                </span>
+                            @endif
                         </p>
                         <p>Observaciones:
                             <span class="font-bold">

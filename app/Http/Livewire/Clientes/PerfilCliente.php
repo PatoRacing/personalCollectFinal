@@ -481,20 +481,6 @@ class PerfilCliente extends Component
                             $gestion->ult_modif = auth()->id();
                             $gestion->save();
                             $gestionPrueba[] = $gestion;
-                            //Si la gestion es multiproducto se actualizan las operaciones abarcadas
-                            if($gestion->multiproducto == 1)
-                            {
-                                $gestionesMultiproducto = GestionOperacion::where('gestion_id', $gestion->id)->get();
-                                foreach($gestionesMultiproducto as $gestionMultiproducto)
-                                {
-                                    $operacionAbarcadaId = $gestionMultiproducto->operacion_id;
-                                    $operacionMultiproducto = Operacion::find($operacionAbarcadaId);
-                                    $operacionMultiproducto->estado_operacion = 10; //inactiva
-                                    $operacionMultiproducto->ult_modif = auth()->id();
-                                    $operacionMultiproducto->save();
-                                    $operacionPrueba[] = $operacionMultiproducto;
-                                }
-                            }
                         }
                         //Si el acuerdo esta en estado completo
                         elseif($acuerdo->estado == 3)//ok
@@ -513,20 +499,6 @@ class PerfilCliente extends Component
                             $gestion->ult_modif = auth()->id();
                             $gestion->save();
                             $gestionPrueba[] = $gestion;
-                            //Si la gestion es multiproducto se actualizan las operaciones abarcadas
-                            if($gestion->multiproducto == 1)
-                            {
-                                $gestionesMultiproducto = GestionOperacion::where('gestion_id', $gestion->id)->get();
-                                foreach($gestionesMultiproducto as $gestionMultiproducto)
-                                {
-                                    $operacionAbarcadaId = $gestionMultiproducto->operacion_id;
-                                    $operacionMultiproducto = Operacion::find($operacionAbarcadaId);
-                                    $operacionMultiproducto->estado_operacion = 9; //finalizada
-                                    $operacionMultiproducto->ult_modif = auth()->id();
-                                    $operacionMultiproducto->save();
-                                    $operacionPrueba[] = $operacionMultiproducto;
-                                }
-                            }
                         }
                     }
                 }

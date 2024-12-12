@@ -34,16 +34,9 @@
                             :active="request()->
                             routeIs('cartera')
                             || request()->routeIs('deudor.perfil')
-                            ">
-                        {{ __('Cartera') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('gestiones')"
-                            :active="request()->
-                            routeIs('gestiones')
-                            || request()->routeIs('gestiones')
                             || request()->routeIs('operacion.perfil')
                             ">
-                        {{ __('Gestiones') }}
+                        {{ __('Cartera') }}
                     </x-nav-link>
                     <x-nav-link :href="route('acuerdos')"
                             :active="request()->
@@ -128,9 +121,6 @@
                     routeIs('deudor.perfil')
                     ">
                 {{ __('Cartera') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('gestiones')" :active="request()->routeIs('gestiones')">
-                {{ __('Gestiones') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('acuerdos')" :active="request()->routeIs('acuerdos')">
                 {{ __('Acuerdos') }}

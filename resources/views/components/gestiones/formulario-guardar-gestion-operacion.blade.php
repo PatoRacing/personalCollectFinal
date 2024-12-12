@@ -1,8 +1,6 @@
 @props([
-    'contexto', 'telefonos', 'operacionesPermitidas', 'anticipo_cuotas_fijas', 'anticipo_cuotas_variables',
-    'observaciones', 'multiproducto'
-])
-
+    'contexto', 'telefonos', 'anticipo_cuotas_fijas', 'anticipo_cuotas_variables','observaciones'
+    ])
 <h4 class="{{config('classes.subtituloTres')}} bg-gray-200">
     Confirmar propuesta
 </h4>
@@ -28,25 +26,27 @@
     <x-input-error :messages="$errors->get('accion')" class="mt-2" />
 </div>
 <!--Contacto-->
-<div class="m-2">
-    <x-input-label for="contacto" :value="__('Nro. contacto')" />
-    <select
-        id="contacto"
-        class="block mt-1 w-full rounded-md border-gray-300"
-        wire:model="contacto"
-    >
-        <option value="">Seleccionar</option>
-        @foreach ($telefonos as $telefono)
-            @if($telefono->numero)
-                <option value="{{$telefono->id}}">
-                    {{$telefono->numero}}
-                </option>
-            @endif
-        @endforeach
-    </select>
-    <x-input-error :messages="$errors->get('contacto')" class="mt-2" />
-</div>
-<!--Si es cuotas fijas o cuotas variables-->
+@if(!empty($telefonos))
+    <div class="m-2">
+        <x-input-label for="contacto" :value="__('Nro. contacto')" />
+        <select
+            id="contacto"
+            class="block mt-1 w-full rounded-md border-gray-300"
+            wire:model="contacto"
+        >
+            <option value="">Seleccionar</option>
+            @foreach ($telefonos as $telefono)
+                @if($telefono->numero)
+                    <option value="{{$telefono->id}}">
+                        {{$telefono->numero}}
+                    </option>
+                @endif
+            @endforeach
+        </select>
+        <x-input-error :messages="$errors->get('contacto')" class="mt-2" />
+    </div>
+@endif
+<!--Si es cuotas fijas-->
 @if($contexto == 2)
     <!--Si tiene anticipo-->
     @if($anticipo_cuotas_fijas  > 0)
@@ -64,6 +64,7 @@
         </div>
     @endif
 @endif
+<!--Si es cuotas variables-->
 @if($contexto == 3)
     <!--Si tiene anticipo-->
     @if($anticipo_cuotas_variables  > 0)
@@ -98,38 +99,6 @@
         />
     <x-input-error :messages="$errors->get('fecha_de_pago')" class="mt-2" />
 </div>
-@if(!empty($operacionesPermitidas))
-    <!--Multproducto-->
-    <div class="m-2">
-        <x-input-label for="multiproducto" :value="__('Abarca otras operaciones del deudor?')" />
-        <select
-            id="multiproducto"
-            class="block mt-1 w-full rounded-md border-gray-300"
-            wire:model="multiproducto"
-        >
-            <option value="">Seleccionar</option>
-            <option value="1">Sí</option>
-            <option value="2">No</option>
-        </select>
-        <x-input-error :messages="$errors->get('multiproducto')" class="mt-2" />
-    </div>
-    @if($multiproducto == 1)
-        <div class="m-2">
-            <x-input-label for="operaciones_multiproducto_id" :value="__('Seleccionar operaciones')" />
-            <select
-                id="operaciones_multiproducto_id"
-                class="block mt-1 w-full rounded-md border-gray-300"
-                wire:model="operaciones_multiproducto_id"
-                multiple
-            >
-                @foreach ($operacionesPermitidas as $operacionPermitida)
-                    <option value="{{$operacionPermitida['id']}}">{{$operacionPermitida['operacion']}}</option>
-                @endforeach
-            </select>
-        </div>
-        <x-input-error :messages="$errors->get('operaciones_multiproducto_id')" class="mt-2" />
-    @endif
-@endif
 @if(auth()->user()->rol == 'Administrador')
     <!--Resultado-->
     <div class="m-2">

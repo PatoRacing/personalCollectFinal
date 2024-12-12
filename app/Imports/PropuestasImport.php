@@ -16,19 +16,6 @@ class PropuestasImport implements ToModel, WithHeadingRow
     */
     public function model(array $row)
     {
-        $multiproducto = $row['multiproducto'];
-        if($multiproducto == '-')
-        {
-            $multiproducto = '-';
-        }
-        elseif($multiproducto == 'Sí')
-        {
-            $multiproducto = 'Sí';
-        }
-        else
-        {
-            return null;
-        }
         $estado = $row['estado'];
         if($estado == 'Aprobada')
         {
@@ -44,7 +31,6 @@ class PropuestasImport implements ToModel, WithHeadingRow
         }
 
         $this->procesarPropuestasImportadas[] = [
-            'multiproducto' => $multiproducto,
             'gestionId' => $row['gestion_id'],
             'estado' => $estado
         ];

@@ -88,18 +88,18 @@ class NuevaGestion extends Component
             $this->resetValidation();
         }
         //Siguiente en cancelacion
-        if($contexto == 2)
+        elseif($contexto == 2)
         {
             $this->paso = 3;
         }
         //Recalcular en cancelacion
-        if($contexto == 3)
+        elseif($contexto == 3)
         {
             $this->paso = 1;
             $this->gestiones(1);
         }
         //Limpiar paso 1 en cuotas fijas
-        if($contexto == 4)
+        elseif($contexto == 4)
         {
             $this->reset('monto_ofrecido_cuotas_fijas', 'anticipo_cuotas_fijas', 'cantidad_de_cuotas_uno_cuotas_fijas',
                         'accion', 'resultado', 'contacto', 'fecha_pago_anticipo', 'fecha_de_pago', 'multiproducto',
@@ -113,18 +113,18 @@ class NuevaGestion extends Component
             $this->resetValidation();
         }
         //Recalcular en cuotas fijas
-        if($contexto == 5)
+        elseif($contexto == 5)
         {
             $this->pasoCuotasFijas = 1;
             $this->gestiones(4);
         }
         //Siguiente en cuotas fijas
-        if($contexto == 6)
+        elseif($contexto == 6)
         {
             $this->pasoCuotasFijas = 3;
         }
         //Limpiar paso 1 en cuotas variables
-        if($contexto == 7)
+        elseif($contexto == 7)
         {
             $this->mensajeCinco = '';
             $this->mensajeSeis = '';
@@ -143,13 +143,13 @@ class NuevaGestion extends Component
             $this->resetValidation();
         }
         //Recalcular en cuotas variables
-        if($contexto == 8)
+        elseif($contexto == 8)
         {
             $this->pasoCuotasVariables = 1;
             $this->gestiones(7);
         }
         //Siguiente en cuotas variables
-        if($contexto == 9)
+        elseif($contexto == 9)
         {
             $this->pasoCuotasVariables = 3;
         }
@@ -176,7 +176,7 @@ class NuevaGestion extends Component
         //Minimo a pagar por el deudor: Al minimo a rendir le agrego los honorarios
         $this->minimoAPagar = $minimoARendir * (1 + ($this->operacion->producto->honorarios / 100));
         $this->minimoAPagar = ceil($minimoARendir / 100) * 100;
-        //Si el monto ofrecido es menor a la minimo a pagar no se permite la negociacion
+        
         if(auth()->user()->rol == 'Administrador')
         {
             $this->paso = 2;
@@ -189,6 +189,7 @@ class NuevaGestion extends Component
         }
         else
         {
+            //Si el monto ofrecido es menor a la minimo a pagar al agente no se lepermite la negociacion
             if($this->monto_ofrecido_cancelacion < $this->minimoAPagar)
             {
                 $this->mensajeUno = 'El monto ofrecido mínimo es $' . number_format($this->minimoAPagar, 2, '.', ',');
@@ -270,6 +271,11 @@ class NuevaGestion extends Component
         //Validacion para agente
         else
         {
+            //Si hay anticipo el limite de cuotas es una menos
+            if($this->anticipo_cuotas_fijas)
+            {
+                $this->limiteCuotas = $this->limiteCuotas - 1;
+            }
             //Error: el monto ofrecido es menor al minimo a pagar
             if($this->monto_ofrecido_cuotas_fijas < $this->minimoAPagar)
             {
@@ -403,6 +409,11 @@ class NuevaGestion extends Component
         //Validacion para agentes
         else
         {
+            //Si hay anticipo el limite de cuotas es una menos
+            if($this->anticipo_cuotas_variables)
+            {
+                $this->limiteCuotas = $this->limiteCuotas - 1;
+            }
             //Error: el monto ofrecido es menor al minimo a pagar
             if($this->monto_ofrecido_cuotas_variables < $this->minimoAPagar)
             {
@@ -482,18 +493,6 @@ class NuevaGestion extends Component
                 'fecha_de_pago' => 'required|date',
                 'observaciones' => 'required|max:255',
             ]);
-            if(!empty($this->operacionesPermitidas))
-            {
-                $this->validate([
-                    'multiproducto' => 'required',
-                ]);
-                if ($this->multiproducto == 1)
-                {
-                    $this->validate([
-                        'operaciones_multiproducto_id' => 'required|array|min:1',
-                    ]);
-                }
-            }
             if(auth()->user()->rol == 'Administrador')
             {
                 $this->validate([
@@ -504,7 +503,7 @@ class NuevaGestion extends Component
             $this->crearNuevaGestion($tipoPropuesta);
         }
         //Validacion para cuotas fijas
-        if($this->origenFormularioNuevaGestion == 2)
+        elseif($this->origenFormularioNuevaGestion == 2)
         {
             if($this->anticipo_cuotas_fijas > 0)
             {
@@ -538,22 +537,11 @@ class NuevaGestion extends Component
                     ]);
                 }
             }
-            if(!empty($this->operacionesPermitidas))
-            {
-                $this->validate([
-                    'multiproducto' => 'required',
-                ]);
-                if ($this->multiproducto == 1) {
-                    $this->validate([
-                        'operaciones_multiproducto_id' => 'required|array|min:1',
-                    ]);
-                }
-            }
             $tipoPropuesta = 2;
             $this->crearNuevaGestion($tipoPropuesta);
         }
         //Validacion para cuotas variables
-        if($this->origenFormularioNuevaGestion == 3)
+        elseif($this->origenFormularioNuevaGestion == 3)
         {
             if($this->anticipo_cuotas_variables > 0)
             {
@@ -584,17 +572,6 @@ class NuevaGestion extends Component
                 {
                     $this->validate([
                         'resultado' => 'required',
-                    ]);
-                }
-            }
-            if(!empty($this->operacionesPermitidas))
-            {
-                $this->validate([
-                    'multiproducto' => 'required',
-                ]);
-                if ($this->multiproducto == 1) {
-                    $this->validate([
-                        'operaciones_multiproducto_id' => 'required|array|min:1',
                     ]);
                 }
             }
@@ -667,46 +644,9 @@ class NuevaGestion extends Component
             $gestion->resultado = 1;//Negociacion
         }
         $gestion->contacto_id = $this->contacto;
-        if($this->multiproducto)
-        {
-            $gestion->multiproducto = $this->multiproducto;
-        }
         $gestion->observaciones = $this->observaciones;
         $gestion->ult_modif = auth()->id();
         $gestion->save();
-        //Si la negociacion es multiproducto y abarca otras operaciones del deudor 
-        if($gestion->multiproducto && $gestion->multiproducto == 1)
-        {
-            //Se crea una instancia de gestion operacion para cada operacion seleccionada
-            foreach($this->operaciones_multiproducto_id as $operacionId)
-            {
-                $gestionOperacion = new GestionOperacion([
-                    'gestion_id' => $gestion->id,
-                    'operacion_id' => $operacionId,
-                    'ult_modif' => auth()->id()
-                ]);
-                $gestionOperacion->save();
-                $operacionIncluida = Operacion::find($operacionId);
-                //Se actualizan los estados de las operaciones incluidas en la negociacion
-                if(auth()->user()->rol == 'Administrador')
-                {
-                    if($this->resultado == 2)
-                    {
-                        $operacionIncluida->estado_operacion = 7;//Operacion propuesta de pago
-                    }
-                    else
-                    {
-                        $operacionIncluida->estado_operacion = 8;//Operacion acuerdo de pago
-                    }
-                }
-                else
-                {
-                    $operacionIncluida->estado_operacion = 6;//Operacion negociacion
-                }
-                $operacionIncluida->ult_modif = auth()->id();
-                $operacionIncluida->save();
-            }
-        }
         //Se actualiza el estado de la operacion con el resultado obtenido
         if(auth()->user()->rol == 'Administrador')
         {
@@ -914,17 +854,12 @@ class NuevaGestion extends Component
         }
         $ultimaGestionOperacion = Gestion::where('operacion_id', $this->operacion->id) 
                                         ->orderBy('created_at', 'desc')
-                                        ->first();
-        $gestionMultiproducto = GestionOperacion::where('operacion_id', $this->operacion->id)
-                                            ->orderBy('created_at', 'desc')
-                                            ->first();
-        if($gestionMultiproducto)
-        {
-            $ultimaGestionOperacion = Gestion::where('id', $gestionMultiproducto->gestion_id)->first();
-        }
+                                        ->first();        
+        $telefonos = $this->telefonos;
 
         return view('livewire.gestiones.nueva-gestion', [
-            'ultimaGestionOperacion' => $ultimaGestionOperacion
+            'ultimaGestionOperacion' => $ultimaGestionOperacion,
+            'telefonos' => $telefonos,
         ]);
     }
 }

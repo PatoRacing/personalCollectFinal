@@ -134,29 +134,14 @@
                     ];
                     $claseColorA = $coloresEstado[$estadoDeOperacion] ?? 'bg-gray-300';
                     $gestion = \App\Models\Gestion::where('operacion_id', $operacion->id)
-                                ->whereIn('resultado', [4,7])
-                                ->first();
+                                                ->whereIn('resultado', [4,7])
+                                                ->orderBy('created_at', 'desc')
+                                                ->first();
                     if($gestion)
                     {
                         $acuerdo = \App\Models\Acuerdo::where('gestion_id', $gestion->id)
                                     ->where('estado', '<', 6)
                                     ->first();
-                    }
-                    if(!$gestion && ($operacion->estado_operacion == 8 || $operacion->estado_operacion == 9))
-                    {
-                        $operacionConGestionMultiproducto =  \App\Models\GestionOperacion::where('operacion_id', $operacion->id)
-                                                                    ->orderBy('created_at', 'desc')                                
-                                                                    ->first();
-                        $gestionMultiproducto = \App\Models\Gestion::where('id', $operacionConGestionMultiproducto->gestion_id)
-                                                        ->whereIn('resultado', [4,7])
-                                                        ->first();
-                            if($gestionMultiproducto)
-                            {
-                                $gestionMultiproductoId = $gestionMultiproducto->id;
-                                $acuerdo = \App\Models\Acuerdo::where('gestion_id', $gestionMultiproductoId)
-                                    ->where('estado', '<', 6)
-                                    ->first();
-                            }
                     }
                 @endphp
                 @if($operacion->estado_operacion == 8 || $operacion->estado_operacion == 9)
