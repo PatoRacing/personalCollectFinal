@@ -9,6 +9,7 @@ use App\Models\Telefono;
 use Livewire\WithFileUploads;
 use App\Imports\DeudoresImport;
 use App\Imports\TelefonoImport;
+use App\Models\Importacion;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\HeadingRowImport;
@@ -198,11 +199,13 @@ class Clientes extends Component
             $deudoresImportados = $importarDeudores->procesarDeudoresImportados;
             //Condicion 3: Si no hay nro_doc la instancia se omite
             $deudoresOmitidos = $importarDeudores->deudoresSinDocumento; 
-            $contadorNuevosDeudores = 0;
+            $nuevosDeudores = 0;
+            $deudoresActualizados = 0;
             foreach($deudoresImportados as $deudorImportado)
             {
                 //Condicion 4: el tiempo máximo para importar es de 20 minutos
-                if (!$this->validarTiempoDeImportacion($inicioDeImportacion)) {
+                if (!$this->validarTiempoDeImportacion($inicioDeImportacion))
+                {
                     return; 
                 }
                 //Condición 5: solo se guarda un nuevo registro en caso de que el deudor no exista en BD
@@ -219,7 +222,7 @@ class Clientes extends Component
                         'codigo_postal' => trim($deudorImportado['codigo_postal']),
                         'ult_modif' => auth()->id(), 
                     ]);
-                    $contadorNuevosDeudores++;
+                    $nuevosDeudores++;
                     $nuevoDeudor->save();
                 }
                 //Si el deudor ya existe se actualiza con la informacion de la importacion
@@ -234,8 +237,18 @@ class Clientes extends Component
                     $deudorEnBD->codigo_postal = trim($deudorImportado['codigo_postal']);
                     $deudorEnBD->ult_modif = auth()->id();
                     $deudorEnBD->update();
+                    $deudoresActualizados ++;
                 }
             }
+            //Generamos la instancia con el detalle de la importacion
+            $nuevaImportacion = new Importacion([
+                'tipo' => 1,//importacion de deudores
+                'valor_uno' => $deudoresOmitidos,
+                'valor_dos' => $nuevosDeudores,
+                'valor_tres' => $deudoresActualizados,
+                'ult_modif' => auth()->id()
+            ]);
+            $nuevaImportacion->save();
             DB::commit();
             // Mensaje para deudores omitidos
             $this->mensajeUno = 
@@ -277,18 +290,20 @@ class Clientes extends Component
             $registrosImportados = $importarInformacion->procesarRegistrosImportados;
             //Condicion 4: Si no hay nro_doc la instancia se omite
             $registrosOmitidos = $importarInformacion->registrosSinDocumento; 
+            $deudoresNoEncontrados = 0;
             $nuevosCuils = 0;
             $nuevosMails = 0;
             $nuevosTelefonos = 0;
             foreach($registrosImportados as $registroImportado)
             {
                 //Validar el tiempo máximo para importar es de 20 minutos
-                if (!$this->validarTiempoDeImportacion($inicioDeImportacion)) {
+                if (!$this->validarTiempoDeImportacion($inicioDeImportacion))
+                {
                     return; 
                 }
                 //Condicion 5: si existe un deudor para el doc y el mismo no tiene cuil Y si en la importación hay cuil
                 //Se actualiza el deudor con el cuil importado
-                $deudor = $this->obtenerDeudor($registroImportado, $nuevosCuils);
+                $deudor = $this->obtenerDeudor($registroImportado, $nuevosCuils , $deudoresNoEncontrados);
                 if($deudor && $registroImportado['email'])
                 {
                     //Condicion 6: si existe deudor para el doc y si en la importacion hay mail.. se crea nuevo registro
@@ -303,39 +318,26 @@ class Clientes extends Component
                     'telefono_dos' => $registroImportado['telefono_dos'],
                     'telefono_tres' => $registroImportado['telefono_tres']
                 ];
-                foreach ($telefonos as $tipoTelefono => $numero) {
+                foreach ($telefonos as $tipoTelefono => $numero)
+                {
                     if ($deudor && $numero) {
                         $this->procesarTelefono($deudor, $numero, $nuevosTelefonos);
                     }
                 }
             }
+            //Generamos la instancia con el detalle de la importacion
+            $nuevaImportacion = new Importacion([
+                'tipo' => 2,//importacion de informacion
+                'valor_uno' => $registrosOmitidos,
+                'valor_dos' => $deudoresNoEncontrados,
+                'valor_tres' => $nuevosCuils,
+                'valor_cuatro' => $nuevosMails,
+                'valor_cinco' => $nuevosTelefonos,
+                'ult_modif' => auth()->id()
+            ]);
+            $nuevaImportacion->save();
             DB::commit();
-            // Mensaje para registros omitidos
-            $this->mensajeUno = $registrosOmitidos == 0
-                    ? 'Todos los registros tenían DNI.'
-                    : ($registrosOmitidos == 1
-                        ? 'Se omitió un registro porque no tiene nro. documento.'
-                        : "Se omitieron {$registrosOmitidos} registros porque no tienen nro. documento.");
-
-            // Mensaje para nuevos cuils
-            $this->mensajeDos = $nuevosCuils == 0
-                    ? 'No se guardaron nuevos cuils porque no habia deudor para el documento o ya existían en la BD.'
-                    : ($nuevosCuils == 1
-                        ? 'Se guardó el cuil de un deudor.'
-                        : "Se guardaron {$nuevosCuils} cuils de {$nuevosCuils} deudores.");
-            // Mensaje para nuevos mails
-            $this->mensajeTres = $nuevosMails == 0
-                    ? 'No se guardaron nuevos mails porque no habia deudor para el documento o ya existían en la BD.'
-                    : ($nuevosMails == 1
-                        ? 'Se guardó el mail de un deudor.'
-                        : "Se guardaron {$nuevosMails} mails de {$nuevosMails} deudores.");
-            // Mensaje para nuevos telefonos
-            $this->mensajeCuatro = $nuevosTelefonos == 0
-                    ? 'No se guardaron nuevos teléfonos porque no habia deudor para el documento o ya existían en la BD.'
-                    : ($nuevosTelefonos == 1
-                        ? 'Se guardó el teléfono de un deudor.'
-                        : "Se guardaron {$nuevosTelefonos} teléfonos de {$nuevosTelefonos} deudores.");
-
+            $this->mensajeUno = 'Importación realizada correctamente (ver resumen en perfil).';
             $this->importacionExitosa();
         } 
         catch(\Exception $e)
@@ -380,11 +382,16 @@ class Clientes extends Component
         ]);
     }
 
-    private function obtenerDeudor($registroImportado, &$nuevosCuils)
+    private function obtenerDeudor($registroImportado, &$nuevosCuils, &$deudoresNoEncontrados)
     {
         $documento = trim((string) $registroImportado['documento']);
         $cuil = preg_replace('/[^0-9]/', '', trim($registroImportado['cuil']));
         $deudor = Deudor::where('nro_doc', $documento)->first();
+        if (!$deudor)
+        {
+            $deudoresNoEncontrados++;
+            return null; 
+        }
         if ($deudor && !$deudor->cuil && $cuil)
         {
             $deudor->cuil = $cuil;

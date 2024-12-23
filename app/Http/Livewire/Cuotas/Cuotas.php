@@ -191,7 +191,7 @@ class Cuotas extends Component
                 $cuota->save();
                 $acuerdoId = $cuota->acuerdo_id;
                 $acuerdo = Acuerdo::find($acuerdoId);
-                $acuerdo->estado = 3;//Rendido a cuenta
+                $acuerdo->estado = 5;//Rendido a cuenta
                 $acuerdo->save();
             }
             $this->modalImportarProcesados = false;

@@ -71,9 +71,9 @@ class PagosParaRendirExport implements FromCollection, WithHeadings, WithColumnW
                 $tipoOperacion,
                 $nroOperacion,
                 $fechaFormateada,
-                '$' . number_format($montoARendir, 2, ',', '.'),
+                '$' . number_format(floor($montoARendir * 100) / 100, 2, ',', '.'),
                 'Abona Cuota '. $nroCuota,
-                '$' . number_format($honorarios, 2, ',', '.'),
+                '$' . number_format(floor($honorarios * 100) / 100, 2, ',', '.'),
                 $porcentajeHonorarios . '%',
                 $pagoId
             ]);

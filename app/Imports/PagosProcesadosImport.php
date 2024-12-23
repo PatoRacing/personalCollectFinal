@@ -17,7 +17,9 @@ class PagosProcesadosImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         $pagoId = $row['pago_id']; 
-        $montoARendir = str_replace('$', '', $row['monto_a_rendir']);
+        $montoARendir = str_replace(['$', ','], ['', ''], $row['monto_a_rendir']); // Elimina '$' y ','.
+        $montoARendir = str_replace('.', '', $montoARendir); // Elimina los puntos (que separan miles).
+        $montoARendir = substr_replace($montoARendir, '.', -2, 0); // Inserta el punto para los decimales.
         $this->procesarPagosProcesados[] =
         [
             'pago_id' => $pagoId,

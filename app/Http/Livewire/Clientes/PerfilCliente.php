@@ -10,6 +10,7 @@ use App\Models\Deudor;
 use App\Models\Gestion;
 use App\Models\GestionDeudor;
 use App\Models\GestionOperacion;
+use App\Models\Importacion;
 use App\Models\Operacion;
 use App\Models\Producto;
 use App\Models\Usuario;
@@ -227,16 +228,26 @@ class PerfilCliente extends Component
                 $this->mensajeError = "Error: La importación ha excedido el tiempo máximo permitido.";
                 return false; // 
             }
+            $operacionesSinDocumento = $importarOperaciones->registrosSinDocumento; 
+            $operacionesSinProducto = $importarOperaciones->registrosSinProducto; 
+            $operacionesSinOperacion = $importarOperaciones->registrosSinOperacion; 
+            $operacionesSinSegmento = $importarOperaciones->registrosSinSegmento; 
+            $operacionesSinDeudaCapital = $importarOperaciones->registrosSinDeudaCapital; 
             //Obtengo las importaciones de la importacion
             $registrosImportados = collect($importarOperaciones->procesarRegistrosImportados);
             $operacionesDesactivadas = 0;
+            $acuerdosSuspendidos = 0;
+            $operacionesFinalizadas = 0;
+            $acuerdosCompletos = 0;
             //Comparo las operaciones importadas con las de las BD (maximo 20 minutos)
-            $this->compararOperaciones($registrosImportados, $operacionesDesactivadas);
+            $this->compararOperaciones($registrosImportados, $operacionesDesactivadas, $acuerdosSuspendidos,
+                            $operacionesFinalizadas, $acuerdosCompletos);
             //Inicio la importacion de las nuevas operaciones
-            $deudoresOmitidos = 0; //No hay deudor en la BD para el nro_doc
+            $registrosOmitidos = 0; //No hay deudor en la BD para el nro_doc
             //Contadores
             $numeroDeFila = 0;
             $operacionesCreadas = 0;
+            $operacionesActualizadas = 0;
             $inicioDeCracionDeOperaciones = time();
             foreach($registrosImportados as $registroImportado)
             {
@@ -351,19 +362,33 @@ class PerfilCliente extends Component
                         $operacion->punitivos = $registroImportado['punitivos'];
                         $operacion->ult_modif = auth()->id();
                         $operacion->save();
+                        $operacionesActualizadas ++;
                     }
                 }
                 //Si no hay deudor la fila se omite
                 else
                 {
-                    $deudoresOmitidos ++;
+                    $registrosOmitidos ++;
                 }
             }
-            $registrosSinDocumento = $importarOperaciones->registrosSinDocumento; 
-            $registrosSinProducto = $importarOperaciones->registrosSinProducto; 
-            $registrosSinOperacion = $importarOperaciones->registrosSinOperacion; 
-            $registrosSinSegmento = $importarOperaciones->registrosSinSegmento; 
-            $registrosSinDeudaCapital = $importarOperaciones->registrosSinDeudaCapital;
+            //Generamos la instancia con el detalle de la importacion
+            $nuevaImportacion = new Importacion([
+                'tipo' => 3,//importacion de operaciones
+                'valor_uno' => $operacionesSinDocumento,
+                'valor_dos' => $operacionesSinProducto,
+                'valor_tres' => $operacionesSinOperacion,
+                'valor_cuatro' => $operacionesSinSegmento,
+                'valor_cinco' => $operacionesSinDeudaCapital,
+                'valor_seis' => $operacionesDesactivadas,
+                'valor_siete' => $acuerdosSuspendidos,
+                'valor_ocho' => $operacionesFinalizadas,
+                'valor_nueve' => $acuerdosCompletos,
+                'valor_diez' => $registrosOmitidos,
+                'valor_once' => $operacionesCreadas,
+                'valor_doce' => $operacionesActualizadas,
+                'ult_modif' => auth()->id()
+            ]);
+            $nuevaImportacion->save();
             DB::commit();
             //Generar reporte con resultados de la importacion
             $mensaje = 'Importación realizada correctamente (ver resumen en perfil).';
@@ -389,7 +414,8 @@ class PerfilCliente extends Component
         return true; 
     }
 
-    private function compararOperaciones($registrosImportados, &$operacionesDesactivadas)
+    private function compararOperaciones($registrosImportados, &$operacionesDesactivadas, &$acuerdosSuspendidos,
+                    &$operacionesFinalizadas, &$acuerdosCompletos)
     {
         $inicioDeComparacion = time();
         $operacionesEnImportacion = $registrosImportados->pluck('operacion')->toArray();
@@ -399,9 +425,6 @@ class PerfilCliente extends Component
         //Comparo las columnas operacion de las operaciones en BD con las importadas.
         $operacionesNoPresentesEnImportacion = array_diff($operacionesEnBD, $operacionesEnImportacion);
         //Si hay operaciones en BD que no estan siendo importadas realizo acciones
-        $operacionPrueba = [];
-        $acuerdoPrueba = [];
-        $gestionPrueba = [];
         if($operacionesNoPresentesEnImportacion)
         {
             foreach($operacionesNoPresentesEnImportacion as $operacionNoPresente)
@@ -414,7 +437,7 @@ class PerfilCliente extends Component
                     $operacion->estado_operacion = 10; //Inactiva
                     $operacion->ult_modif = auth()->id();
                     $operacion->save();
-                    $operacionPrueba[] = $operacion;
+                    $operacionesDesactivadas ++;
                     $gestion = Gestion::where('operacion_id', $operacion->id)
                                     ->where('resultado', 1)
                                     ->orderBy('created_at', 'desc')
@@ -425,7 +448,6 @@ class PerfilCliente extends Component
                         $gestion->resultado = 6;//cancelada
                         $gestion->ult_modif = auth()->id();
                         $gestion->save();
-                        $gestionPrueba[] = $gestion;
                     }
                 }
                 //Si la operacion esta en estado propuesta de pago
@@ -434,7 +456,7 @@ class PerfilCliente extends Component
                     $operacion->estado_operacion = 10; //Inactiva
                     $operacion->ult_modif = auth()->id();
                     $operacion->save();
-                    $operacionPrueba[] = $operacion;
+                    $operacionesDesactivadas ++;
                     $gestion = Gestion::where('operacion_id', $operacion->id)
                                     ->where('resultado', 2)
                                     ->orderBy('created_at', 'desc')
@@ -445,7 +467,6 @@ class PerfilCliente extends Component
                         $gestion->resultado = 6;//cancelada
                         $gestion->ult_modif = auth()->id();
                         $gestion->save();
-                        $gestionPrueba[] = $gestion;
                     }
                 }
                 //Si la operacion esta en estado acuerdo de pago
@@ -466,7 +487,7 @@ class PerfilCliente extends Component
                             $acuerdo->estado = 7;//Cancelado
                             $acuerdo->ult_modif = auth()->id();
                             $acuerdo->save();
-                            $acuerdoPrueba[] = $acuerdo;
+                            $acuerdosSuspendidos ++;
                             //Las cuotas en estado vigente se eliminan
                             Cuota::where('acuerdo_id', $acuerdo->id)
                                         ->where('estado', 1)
@@ -475,12 +496,11 @@ class PerfilCliente extends Component
                             $operacion->estado_operacion = 10; //Inactiva
                             $operacion->ult_modif = auth()->id();
                             $operacion->save();
-                            $operacionPrueba[] = $operacion;
+                            $operacionesDesactivadas ++;
                             //Se actualiza la gestion
                             $gestion->resultado = 6;//cancelada
                             $gestion->ult_modif = auth()->id();
                             $gestion->save();
-                            $gestionPrueba[] = $gestion;
                         }
                         //Si el acuerdo esta en estado completo
                         elseif($acuerdo->estado == 3)//ok
@@ -488,17 +508,16 @@ class PerfilCliente extends Component
                             $acuerdo->estado = 4;//finalizado
                             $acuerdo->ult_modif = auth()->id();
                             $acuerdo->save();
-                            $acuerdoPrueba[] = $acuerdo;
+                            $acuerdosCompletos ++;
                             //Se actualiza la operacion
                             $operacion->estado_operacion = 9; //Finalizada
                             $operacion->ult_modif = auth()->id();
                             $operacion->save();
-                            $operacionPrueba[] = $operacion;
+                            $operacionesFinalizadas ++;
                             //Se actualiza la gestion
                             $gestion->resultado = 7;//finalizada
                             $gestion->ult_modif = auth()->id();
                             $gestion->save();
-                            $gestionPrueba[] = $gestion;
                         }
                     }
                 }
@@ -510,10 +529,9 @@ class PerfilCliente extends Component
                     $operacion->estado_operacion = 10; //Inactiva
                     $operacion->ult_modif = auth()->id();
                     $operacion->save();
-                    $operacionPrueba[] = $operacion;
+                    $operacionesDesactivadas ++;
                 }
             }
-            $operacionesDesactivadas ++;
         }
     }
 
@@ -548,7 +566,7 @@ class PerfilCliente extends Component
             $importarAsignacion = new AsignacionImport;
             Excel::import($importarAsignacion, $excel);
             $registrosImportados = $importarAsignacion->procesarAsignacionImportada;
-            $registrosSinOperaciones = $importarAsignacion->registrosSinOperacion;
+            $registrosSinOperacion = $importarAsignacion->registrosSinOperacion;
             $registrosSinUsuario = $importarAsignacion->registrosSinUsuario;
             $operacionesAsignadas = 0;
             $operacionesNoPresentesEnBD = 0;
@@ -582,6 +600,16 @@ class PerfilCliente extends Component
                     $operacionesNoPresentesEnBD ++;
                 }
             }
+            $nuevaImportacion = new Importacion([
+                'tipo' => 4,//importacion de operaciones
+                'valor_uno' => $registrosSinOperacion,
+                'valor_dos' => $registrosSinUsuario,
+                'valor_tres' => $operacionesNoPresentesEnBD,
+                'valor_cuatro' => $usuariosNoPresentesEnBD,
+                'valor_cinco' => $operacionesAsignadas,
+                'ult_modif' => auth()->id()
+            ]);
+            $nuevaImportacion->save();
             DB::commit();
             //Generar reporte con resultados de la importacion
             $mensaje = 'Importación realizada correctamente (ver resumen en perfil).';

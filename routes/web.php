@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\BuscadorController;
 use App\Http\Controllers\CarteraController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\CuotaController;
@@ -55,6 +56,8 @@ Route::get('acuerdo-perfil/{id}', [AcuerdoController::class, 'acuerdoPerfil'])->
 //7-Cuotas
 Route::get('cuotas', [CuotaController::class, 'index'])->middleware(['auth', 'verified'])->name('cuotas');
 Route::get('cuota-perfil/{id}', [CuotaController::class, 'cuotaPerfil'])->middleware(['auth', 'verified', 'validar.id'])->name('cuota.perfil');
+//8-Buscador
+Route::get('buscador', [BuscadorController::class, 'index'])->middleware(['auth', 'verified'])->name('buscador');
 
 //Revisar
 Route::middleware('auth')->group(function () {

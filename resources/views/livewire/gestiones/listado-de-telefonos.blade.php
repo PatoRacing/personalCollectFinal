@@ -290,27 +290,27 @@
         </x-modales.modal-formulario>
     @endif
     @if($modalEliminarTelefono)
-    <x-modal-advertencia>
-        <div class="text-sm">
-            <!--Contenedor Parrafos-->
-            <p class="px-1 text-center">
-                {{$this->mensajeUno}}
-            </p>
-            <p class="px-1 text-center">
-                Confirmás el procedimiento?
-            </p>
-        </div>
-        <!-- Botonera -->
-        <div class="w-full mt-2 my-1 px-1 grid grid-cols-2 gap-1">
-            <button class="{{ config('classes.btn') }} bg-green-700 hover:bg-green-800"
-                    wire:click.prevent="eliminarTelefono">
-                Confirmar
-            </button>
-            <button class="{{ config('classes.btn') }} bg-red-600 hover:bg-red-700 w-full"
-                    wire:click.prevent="gestiones(6)">
-                Cancelar
-            </button>
-        </div>
-    </x-modal-advertencia>
-@endif
+        <x-modal-advertencia>
+            <div class="text-sm">
+                <!--Contenedor Parrafos-->
+                <p class="px-1 text-center">
+                    {{$this->mensajeUno}}
+                </p>
+                <p class="px-1 text-center">
+                    Confirmás el procedimiento?
+                </p>
+            </div>
+            <!-- Botonera -->
+            <div class="w-full mt-2 my-1 px-1 grid grid-cols-2 gap-1">
+                <button class="{{ config('classes.btn') }} bg-green-700 hover:bg-green-800"
+                        wire:click.prevent="eliminarTelefono">
+                    Confirmar
+                </button>
+                <button class="{{ config('classes.btn') }} bg-red-600 hover:bg-red-700 w-full"
+                        wire:click.prevent="gestiones(6)">
+                    Cancelar
+                </button>
+            </div>
+        </x-modal-advertencia>
+    @endif
 </div>

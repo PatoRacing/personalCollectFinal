@@ -28,45 +28,45 @@
         </div>
     @endif
     <div class="p-1">
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-1 p-1 border">
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-1 p-3 my-2 bg-gray-200">
             <!-- Botones de navegación -->
-            <button 
-                class="{{ config('classes.btn') }} {{ $estadoDeCuota === 1 ? 'bg-blue-800 hover:bg-blue-900 text-white' : 'bg-gray-300' }}" 
+            <button
+                class="text-black p-2 rounded w-38 text-sm {{ $estadoDeCuota === 1 ? 'bg-blue-800 text-white' : 'border shadow bg-white' }}"
                 wire:click="obtenerEstadoRequerido(1)">
                 Vigente
             </button>
-            <button 
-                class="{{ config('classes.btn') }} {{ $estadoDeCuota === 2 ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-gray-300' }}" 
+            <button
+                class="text-black p-2 rounded w-38 text-sm {{ $estadoDeCuota === 2 ? 'bg-red-600 text-white' : 'border shadow bg-white' }}" 
                 wire:click="obtenerEstadoRequerido(2)">
                 Observada
             </button>
-            <button 
-                class="{{ config('classes.btn') }} {{ $estadoDeCuota === 3 ? 'bg-indigo-600 hover:bg-indigo-700 text-white' : 'bg-gray-300' }}" 
+            <button
+                class="text-black p-2 rounded w-38 text-sm {{ $estadoDeCuota === 3 ? 'bg-indigo-600 text-white' : 'border shadow bg-white' }}" 
                 wire:click="obtenerEstadoRequerido(3)">
                 Aplicada
             </button>
             <button 
-                class="{{ config('classes.btn') }} {{ $estadoDeCuota === 4 ? 'bg-cyan-600 hover:bg-cyan-700 text-white' : 'bg-gray-300' }}" 
+                class="text-black p-2 rounded w-38 text-sm {{ $estadoDeCuota === 4 ? 'bg-cyan-600 text-white' : 'border shadow bg-white' }}"
                 wire:click="obtenerEstadoRequerido(4)">
                 R. Parcial
             </button>
-            <button 
-                class="{{ config('classes.btn') }} {{ $estadoDeCuota === 5 ? 'bg-green-700 hover:bg-green-800 text-white' : 'bg-gray-300' }}" 
+            <button
+                class="text-black p-2 rounded w-38 text-sm {{ $estadoDeCuota === 5 ? 'bg-green-700 text-white' : 'border shadow bg-white' }}" 
                 wire:click="obtenerEstadoRequerido(5)">
                 R. Total
             </button>
-            <button 
-                class="{{ config('classes.btn') }} {{ $estadoDeCuota === 6 ? 'bg-yellow-500 hover:bg-yellow-600 text-white' : 'bg-gray-300' }}" 
+            <button
+                class="text-black p-2 rounded w-38 text-sm {{ $estadoDeCuota === 6 ? 'bg-yellow-500 text-white' : 'border shadow bg-white' }}" 
                 wire:click="obtenerEstadoRequerido(6)">
                 Procesada
             </button>
-            <button 
-                class="{{ config('classes.btn') }} {{ $estadoDeCuota === 7 ? 'bg-orange-500 hover:bg-orange-600 text-white' : 'bg-gray-300' }}" 
+            <button
+                class="text-black p-2 rounded w-38 text-sm {{ $estadoDeCuota === 7 ? 'bg-orange-500 text-white' : 'border shadow bg-white' }}"
                 wire:click="obtenerEstadoRequerido(7)">
                 R. a Cuenta
             </button>
-            <button 
-                class="{{ config('classes.btn') }} {{ $estadoDeCuota === 8 ? 'bg-gray-600 hover:bg-gray-700 text-white' : 'bg-gray-300' }}" 
+            <button
+                class="text-black p-2 rounded w-38 text-sm {{ $estadoDeCuota === 8 ? 'bg-gray-600 text-white' : 'border shadow bg-white' }}" 
                 wire:click="obtenerEstadoRequerido(8)">
                 Devuelta
             </button>

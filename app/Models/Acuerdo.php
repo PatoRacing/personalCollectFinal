@@ -16,12 +16,12 @@ class Acuerdo extends Model
         'pdf_acuerdo',
         'estado',
         //1-Preaprobado: acuerdo sin aprobacion del cliente
-        //2-Vigente
-        //3-Completo
-        //4-Finalizado
-        //5-Rendido a cuenta
+        //2-Vigente: acuerdo con cuotas activas aprobado por cliente
+        //3-Completo: acuerdo con todas las cuotas cobradas pero que aun figura en importacion
+        //4-Cancelado: acuerdo con todas las cuotas cobras y que no figura en importacion
+        //5-Rendido a cuenta: cancelación con pagos incompletos rendidos
         //6-Anulado: desde Personal Collect
-        //7-Cancelado: desde el Cliente
+        //7-Suspendido: se quito la operacion desde el Cliente
         'ult_modif',
     ];
 

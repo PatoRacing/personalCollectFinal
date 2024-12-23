@@ -1,4 +1,4 @@
-<form wire:submit.prevent='terminosDeBusqueda'class="p-1 my-1 bg-blue-200 rounded-lg ">
+<form wire:submit.prevent='terminosDeBusqueda'class="p-1 my-1 bg-blue-200 rounded-lg">
     @php
         if(auth()->user()->rol == 'Administrador')
         {

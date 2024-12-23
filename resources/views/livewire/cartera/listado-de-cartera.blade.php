@@ -43,56 +43,56 @@
             $grid = 'lg:grid-cols-9';
         }
     @endphp
-    <div class="grid grid-cols-2 md:grid-cols-5 {{$grid}} my-1 gap-1 p-1 border">
+    <div class="grid grid-cols-2 md:grid-cols-5 {{$grid}} p-3 my-2 bg-gray-200 gap-1 border">
         <!-- Botones de navegación -->
         <button 
-            class="{{ config('classes.btn') }} {{ $estadoDeOperacion === 1 ? 'bg-blue-800 hover:bg-blue-900 text-white' : 'bg-gray-300' }}" 
+            class="text-black p-2 rounded w-38 text-sm {{ $estadoDeOperacion === 1 ? 'bg-blue-800 text-white' : 'border shadow bg-white' }}"
             wire:click="obtenerEstadoRequerido(1)">
             Activas
         </button>
-        <button 
-            class="{{ config('classes.btn') }} {{ $estadoDeOperacion === 2 ? 'bg-indigo-600 hover:bg-indigo-700 text-white' : 'bg-gray-300' }}" 
+        <button
+            class="text-black p-2 rounded w-38 text-sm {{ $estadoDeOperacion === 2 ? 'bg-indigo-600 text-white' : 'border shadow bg-white' }}"  
             wire:click="obtenerEstadoRequerido(2)">
             En proceso
         </button>
-        <button 
-            class="{{ config('classes.btn') }} {{ $estadoDeOperacion === 3 ? 'bg-gray-900 hover:bg-black text-white' : 'bg-gray-300' }}" 
+        <button
+            class="text-black p-2 rounded w-38 text-sm {{ $estadoDeOperacion === 3 ? 'bg-gray-900 text-white' : 'border shadow bg-white' }}" 
             wire:click="obtenerEstadoRequerido(3)">
             Fallecido
         </button>
-        <button 
-            class="{{ config('classes.btn') }} {{ $estadoDeOperacion === 4 ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-gray-300' }}" 
+        <button
+            class="text-black p-2 rounded w-38 text-sm {{ $estadoDeOperacion === 4 ? 'bg-red-600 text-white' : 'border shadow bg-white' }}" 
             wire:click="obtenerEstadoRequerido(4)">
             Inubicable
         </button>
-        <button 
-            class="{{ config('classes.btn') }} {{ $estadoDeOperacion === 5 ? 'bg-green-700 hover:bg-green-800 text-white' : 'bg-gray-300' }}" 
+        <button
+            class="text-black p-2 rounded w-38 text-sm {{ $estadoDeOperacion === 5 ? 'bg-green-700 text-white' : 'border shadow bg-white' }}" 
             wire:click="obtenerEstadoRequerido(5)">
             Ubicado
         </button>
-        <button 
-            class="{{ config('classes.btn') }} {{ $estadoDeOperacion === 6 ? 'bg-orange-500 hover:bg-orange-600 text-white' : 'bg-gray-300' }}" 
+        <button
+            class="text-black p-2 rounded w-38 text-sm {{ $estadoDeOperacion === 6 ? 'bg-orange-500 text-white' : 'border shadow bg-white' }}"  
             wire:click="obtenerEstadoRequerido(6)">
             Negociación
         </button>
-        <button 
-            class="{{ config('classes.btn') }} {{ $estadoDeOperacion === 7 ? 'bg-cyan-600 hover:bg-cyan-700 text-white' : 'bg-gray-300' }}" 
+        <button
+            class="text-black p-2 rounded w-38 text-sm {{ $estadoDeOperacion === 7 ? 'bg-cyan-600 text-white' : 'border shadow bg-white' }}" 
             wire:click="obtenerEstadoRequerido(7)">
             Propuesta
         </button>
-        <button 
-            class="{{ config('classes.btn') }} {{ $estadoDeOperacion === 8 ? 'bg-blue-400 hover:bg-blue-500 text-white' : 'bg-gray-300' }}" 
+        <button
+            class="text-black p-2 rounded w-38 text-sm {{ $estadoDeOperacion === 8 ? 'bg-blue-400 text-white' : 'border shadow bg-white' }}" 
             wire:click="obtenerEstadoRequerido(8)">
             Acuerdo
         </button>
-        <button 
-            class="{{ config('classes.btn') }} {{ $estadoDeOperacion === 9 ? 'bg-yellow-500 hover:bg-yellow-600 text-white' : 'bg-gray-300' }}" 
+        <button
+            class="text-black p-2 rounded w-38 text-sm {{ $estadoDeOperacion === 9 ? 'bg-yellow-500 text-white' : 'border shadow bg-white' }}" 
             wire:click="obtenerEstadoRequerido(9)">
             Finalizadas
         </button>
         @if(auth()->user()->rol == 'Administrador')
-            <button 
-                class="{{ config('classes.btn') }} {{ $estadoDeOperacion === 10 ? 'bg-gray-500 hover:bg-gray-600 text-white' : 'bg-gray-300' }}" 
+            <button
+                class="text-black p-2 rounded w-38 text-sm {{ $estadoDeOperacion === 10 ? 'bg-gray-500 text-white' : 'border shadow bg-white' }}" 
                 wire:click="obtenerEstadoRequerido(10)">
                 Inactiva
             </button>

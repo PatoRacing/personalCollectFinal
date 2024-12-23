@@ -10,40 +10,40 @@
                 <p>{{ session('idNoExistente') }}</p>
         </div>
     @endif 
-    <div class="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-10 gap-1 p-1  my-1 border">
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-1 p-3 my-2 bg-gray-200">
         <!-- Botones de navegación -->
-        <button 
-            class="{{ config('classes.btn') }} {{ $estadoDeAcuerdo === 1 ? 'bg-cyan-600 hover:bg-cyan-700 text-white' : 'bg-gray-300' }}" 
+        <button
+            class="text-black p-2 rounded w-38 text-sm {{ $estadoDeAcuerdo === 1 ? 'bg-cyan-600 text-white' : 'border shadow bg-white' }}" 
             wire:click="obtenerEstadoRequerido(1)">
             Preaprobado
         </button>
-        <button 
-            class="{{ config('classes.btn') }} {{ $estadoDeAcuerdo === 2 ? 'bg-blue-800 hover:bg-blue-900 text-white' : 'bg-gray-300' }}" 
+        <button
+            class="text-black p-2 rounded w-38 text-sm {{ $estadoDeAcuerdo === 2 ? 'bg-blue-800 text-white' : 'border shadow bg-white' }}" 
             wire:click="obtenerEstadoRequerido(2)">
             Vigente
         </button>
-        <button 
-            class="{{ config('classes.btn') }} {{ $estadoDeAcuerdo === 3 ? 'bg-green-700 hover:bg-green-800 text-white' : 'bg-gray-300' }}" 
+        <button
+            class="text-black p-2 rounded w-38 text-sm {{ $estadoDeAcuerdo === 3 ? 'bg-green-700 text-white' : 'border shadow bg-white' }}" 
             wire:click="obtenerEstadoRequerido(3)">
             Completo
         </button>
-        <button 
-            class="{{ config('classes.btn') }} {{ $estadoDeAcuerdo === 4 ? 'bg-yellow-500 hover:bg-yellow-600 text-white' : 'bg-gray-300' }}" 
+        <button
+            class="text-black p-2 rounded w-38 text-sm {{ $estadoDeAcuerdo === 4 ? 'bg-yellow-500 text-white' : 'border shadow bg-white' }}" 
             wire:click="obtenerEstadoRequerido(4)">
             Finalizado
         </button>
-        <button 
-            class="{{ config('classes.btn') }} {{ $estadoDeAcuerdo === 5 ? 'bg-orange-500 hover:bg-orange-600 text-white' : 'bg-gray-300' }}" 
+        <button
+            class="text-black p-2 rounded w-38 text-sm {{ $estadoDeAcuerdo === 5 ? 'bg-orange-500 text-white' : 'border shadow bg-white' }}" 
             wire:click="obtenerEstadoRequerido(5)">
             R. a Cuenta.
         </button>
-        <button 
-            class="{{ config('classes.btn') }} {{ $estadoDeAcuerdo === 6 ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-gray-300' }}" 
+        <button
+            class="text-black p-2 rounded w-38 text-sm {{ $estadoDeAcuerdo === 6 ? 'bg-red-600 text-white' : 'border shadow bg-white' }}" 
             wire:click="obtenerEstadoRequerido(6)">
             Anulado
         </button>
-        <button 
-            class="{{ config('classes.btn') }} {{ $estadoDeAcuerdo === 7 ? 'bg-gray-900 hover:black text-white' : 'bg-gray-300' }}" 
+        <button
+            class="text-black p-2 rounded w-38 text-sm {{ $estadoDeAcuerdo === 7 ? 'bg-gray-900 text-white' : 'border shadow bg-white' }}"
             wire:click="obtenerEstadoRequerido(7)">
             Cancelado
         </button>
