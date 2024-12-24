@@ -270,7 +270,7 @@
                                                 Editar
                                             </button>
                                             <button class="text-white p-1.5 rounded bg-red-600 hover:bg-red-700"
-                                                    wire:click="gestiones(7, {{ $tareaPendiente->id }})">
+                                                    wire:click="gestiones(7, {{ $tareaRealizada->id }})">
                                                 Eliminar
                                             </button>
                                         </div>

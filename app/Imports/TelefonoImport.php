@@ -19,7 +19,7 @@ class TelefonoImport implements ToModel, WithHeadingRow
     {
         //Condicion 3: Si no hay nro_doc la instancia se omite
         $documento = $row['documento'];
-        if(!$documento)
+        if (!$documento)
         {
             $this->registrosSinDocumento++;
             return null;

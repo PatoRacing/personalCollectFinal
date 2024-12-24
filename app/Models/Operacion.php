@@ -28,7 +28,7 @@ class Operacion extends Model
         // 7- Activa - con propuesta de pago
         // 8- Activa - con acuerdo de pago
         // 9- Finalizada
-        // 10-Inactiva 
+        // 10-Inactiva
         'fecha_apertura',
         'cant_cuotas',
         'sucursal',

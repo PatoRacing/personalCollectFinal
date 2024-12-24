@@ -51,12 +51,12 @@ class Cuota extends Model
         $esCuotaOriginalParcial = $this->estado == 4; // Rendida parcial
         $esCuotaSaldoPendiente = $this->concepto == 'Saldo Pendiente';
 
-        // 3. Si la cuota actual no es una cuota parcial ni saldo pendiente, pero hay cuotas previas sin rendir totalmente
+        // 3. Si la cta actual no es una cta parcial ni s. pendiente, pero hay ctas previas s/ rendir totalmente
         if (!$esCuotaOriginalParcial && !$esCuotaSaldoPendiente && $cuotasNoGestionadas) {
             return false;
         }
 
-        // 4. Si estamos en una cuota de saldo pendiente o una cuota parcial y no hay cuotas previas no gestionadas, se permite
+        // 4. Si estamos en una cta de s. pendiente o una cta parcial y no hay ctas previas no gestionadas, se permite
         return true;
     }
 }

@@ -31,8 +31,8 @@ class Usuario extends Authenticatable
         'codigo_postal',
         'fecha_de_ingreso',
         'estado', // 1- Activo 2-Inactivo
-        'password', 
-        'ult_modif',           
+        'password',
+        'ult_modif',
     ];
 
     /**
